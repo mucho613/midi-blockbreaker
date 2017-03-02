@@ -79,6 +79,7 @@ function draw() {
 		if(rest == 0) {
 			gameOver();
 			gameStart();
+			return;
 		}
 	}
 	convertDotData();
@@ -86,7 +87,9 @@ function draw() {
 	if(clearCheck()) {
 		if(clear()) gameStart();
 	}
-	else setTimeout(draw, 100);
+	else {
+		setTimeout(draw, 100);
+	}
 }
 
 var rest;
