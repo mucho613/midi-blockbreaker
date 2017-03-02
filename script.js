@@ -197,7 +197,7 @@ function updateField() {
 	}
 
 	// Apply player's control
-	if(barPositionX > 0){
+	if(barPositionX > 1){
 		if(key[0]) barPositionX--;
 	}
 	if(barPositionX + barLength - 1 < 16){
