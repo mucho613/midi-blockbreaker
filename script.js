@@ -42,7 +42,22 @@ function init(){
 		map[i] = new Array(16);
 	}
 	dotData = new Array(64);
-	
+
+	key = [false, false];
+	document.addEventListener("keydown", (e) => {
+		inPause = false;
+		if(e.keyCode == 37) key[0] = true;
+		if(e.keyCode == 39) key[1] = true;
+	});
+	document.addEventListener("keyup", (e) => {
+		if(e.keyCode == 37) key[0] = false;
+		if(e.keyCode == 39) key[1] = false;
+	});
+
+	gameStart();
+}
+
+function createField() {
 	// Create field
 	for(i=0; i<16; i++){
 		for(j=0; j<16; j++){
@@ -56,33 +71,58 @@ function init(){
 			if((3<i && i<12) && (3<j && j<7)) map[i][j] = 3;
 		}
 	}
-
-	key = [false, false];
-	document.addEventListener("keydown", (e) => {
-		if(e.keyCode == 37) key[0] = true;
-		if(e.keyCode == 39) key[1] = true;
-	});
-	document.addEventListener("keyup", (e) => {
-		if(e.keyCode == 37) key[0] = false;
-		if(e.keyCode == 39) key[1] = false;
-	});
-
-	gameStart();
 }
 
+function draw() {
+	if(!inPause) {
+		if(!updateField()) miss();
+		if(rest == 0) {
+			gameOver();
+			gameStart();
+		}
+	}
+	convertDotData();
+	display();
+	if(clearCheck()) {
+		if(clear()) gameStart();
+	}
+	else setTimeout(draw, 100);
+}
+
+var rest;
+var inPause;
+
 function gameStart() {
+	inPause = true;
+
+	rest = 3;
+	
+	createField();
+
+	initializeFieldState();
+
 	convertDotData();
 	display();
 
 	draw();
 }
 
-function draw() {
-	updateField();
-	convertDotData();
-	display();
-	if(clearCheck()) clear();
-	else setTimeout(draw, 100);
+function initializeFieldState() {
+	ballPositionX = 5, ballPositionY = 11;
+	ballVelocityX = 1, ballVelocityY = -1;
+
+	barPositionX = 8, barLength = 4;
+}
+
+function miss() {
+	initializeFieldState();
+	rest--;
+	if(rest != 0) sendString("Miss! Ball x" + rest);
+	inPause = true;
+}
+
+function gameOver() {
+	sendString("Game Over. Try again!");
 }
 
 function clear() {
@@ -138,7 +178,6 @@ function display(){
 	}
 	checksum = (128 - (checksum % 128)) % 128;
 
-	console.log([0xf0, 0x41, 0x10, 0x45, 0x12, 0x10, 0x01, 0x00].concat(dotData).concat([checksum, 0xf7]));
 	outputs[0].send([0xf0, 0x41, 0x10, 0x45, 0x12, 0x10, 0x01, 0x00].concat(dotData).concat([checksum, 0xf7]));
 }
 
@@ -149,6 +188,11 @@ var barPositionX = 8, barLength = 4;
 var barAreaMap;
 
 function updateField() {
+	if(ballPositionY == map[0].length - 1) {
+	       	map[ballPositionX][ballPositionY] = 0;
+		return false;
+	}
+
 	// Apply player's control
 	if(barPositionX > 0){
 		if(key[0]) barPositionX--;
@@ -224,4 +268,6 @@ function updateField() {
 	ballPositionY += ballVelocityY;
 	
 	map[ballPositionX][ballPositionY] = 1;
+
+	return true;
 }
