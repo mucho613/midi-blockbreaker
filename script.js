@@ -39,6 +39,11 @@ function errorCallback() {
 	console.log("Error!");
 }
 
+function beep(noteNumber, length) {
+	outputs[midiOutputIndex].send([0x90, noteNumber, 100]);
+	setTimeout(outputs[midiOutputIndex].send([0x90, noteNumber, 0]), length);
+}
+
 function onMIDIEvent(e){
 	if(e.data[0] != 0xfe){
 		console.log(e.data);
@@ -202,6 +207,7 @@ var barAreaMap;
 function updateField() {
 	if(ballPositionY == map[0].length - 1) {
 	       	map[ballPositionX][ballPositionY] = 0;
+		beep(36, 500);
 		return false;
 	}
 
@@ -230,7 +236,11 @@ function updateField() {
 	map[ballPositionX + 1][ballPositionY] == 0 &&
 	map[ballPositionX][ballPositionY + 1] == 0){
 		ballVelocityX *= -1; ballVelocityY *= -1;
-		if(map[ballPositionX + 1][ballPositionY + 1] == 3) map[ballPositionX + 1][ballPositionY + 1] = 0;
+		if(map[ballPositionX + 1][ballPositionY + 1] == 3) {
+			beep(72, 200);
+			map[ballPositionX + 1][ballPositionY + 1] = 0;
+		}
+		else beep(60, 200);
 	}
 		
 	if(ballVelocityX > 0 && ballVelocityY < 0 &&
@@ -238,7 +248,11 @@ function updateField() {
 	map[ballPositionX + 1][ballPositionY] == 0 &&
 	map[ballPositionX][ballPositionY - 1] == 0){
 		ballVelocityX *= -1; ballVelocityY *= -1;
-		if(map[ballPositionX + 1][ballPositionY - 1] == 3) map[ballPositionX + 1][ballPositionY - 1] = 0;
+		if(map[ballPositionX + 1][ballPositionY - 1] == 3) {
+			beep(72, 200);
+			map[ballPositionX + 1][ballPositionY - 1] = 0;
+		}
+		else beep(60, 200);
 	}
 
 	if(ballVelocityX < 0 && ballVelocityY > 0 &&
@@ -246,7 +260,11 @@ function updateField() {
 	map[ballPositionX - 1][ballPositionY] == 0 &&
 	map[ballPositionX][ballPositionY + 1] == 0){
 		ballVelocityX *= -1; ballVelocityY *= -1;
-		if(map[ballPositionX - 1][ballPositionY + 1] == 3) map[ballPositionX - 1][ballPositionY + 1] = 0;
+		if(map[ballPositionX - 1][ballPositionY + 1] == 3) {
+			beep(72, 200);
+			map[ballPositionX - 1][ballPositionY + 1] = 0;
+		}
+		else beep(60, 200);
 	}
 
 	if(ballVelocityX < 0 && ballVelocityY < 0 &&
@@ -254,24 +272,44 @@ function updateField() {
 	map[ballPositionX - 1][ballPositionY] == 0 &&
 	map[ballPositionX][ballPositionY - 1] == 0){
 		ballVelocityX *= -1; ballVelocityY *= -1;
-		if(map[ballPositionX - 1][ballPositionY - 1] == 3) map[ballPositionX - 1][ballPositionY - 1] = 0;
+		if(map[ballPositionX - 1][ballPositionY - 1] == 3) {
+			beep(72, 200);
+			map[ballPositionX - 1][ballPositionY - 1] = 0;
+		}
+		else beep(60, 200);
 	}
 	
 	if(ballVelocityX > 0 && map[ballPositionX + 1][ballPositionY] != 0) {
 		ballVelocityX *= -1;
-		if(map[ballPositionX + 1][ballPositionY] == 3) map[ballPositionX + 1][ballPositionY] = 0;
+		if(map[ballPositionX + 1][ballPositionY] == 3) {
+			beep(72, 200);
+			map[ballPositionX + 1][ballPositionY] = 0;
+		}
+		else beep(60, 200);
 	}
 	if(ballVelocityX < 0 && map[ballPositionX - 1][ballPositionY] != 0) {
 		ballVelocityX *= -1;
-		if(map[ballPositionX - 1][ballPositionY] == 3) map[ballPositionX - 1][ballPositionY] = 0;
+		if(map[ballPositionX - 1][ballPositionY] == 3) {
+			beep(72, 200);
+			map[ballPositionX - 1][ballPositionY] = 0;
+		}
+		else beep(60, 200);
 	}
 	if(ballVelocityY > 0 && map[ballPositionX][ballPositionY + 1] != 0) {
 		ballVelocityY *= -1;
-		if(map[ballPositionX][ballPositionY + 1] == 3) map[ballPositionX][ballPositionY + 1] = 0;
+		if(map[ballPositionX][ballPositionY + 1] == 3) {
+			beep(72, 200);
+			map[ballPositionX][ballPositionY + 1] = 0;
+		}
+		else beep(60, 200);
 	}
 	if(ballVelocityY < 0 && map[ballPositionX][ballPositionY - 1] != 0) {
 		ballVelocityY *= -1;
-		if(map[ballPositionX][ballPositionY - 1] == 3) map[ballPositionX][ballPositionY - 1] = 0;
+		if(map[ballPositionX][ballPositionY - 1] == 3) {
+			beep(72, 200);
+			map[ballPositionX][ballPositionY - 1] = 0;
+		}
+		else beep(60, 200);
 	}
 	
 	map[ballPositionX][ballPositionY] = 0;
