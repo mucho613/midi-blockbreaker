@@ -6,6 +6,14 @@ var dotData;
 
 var key;
 
+var midiOutputSelect = document.getElementById("midi-output");
+
+midiOutputSelect.addEventListener("change", (e) => {
+	midiOutputIndex = midiOutputSelect.value;
+});
+
+var midiOutputIndex = 0;
+
 promise = navigator.requestMIDIAccess({sysex: true});
 promise.then(successCallback, errorCallback);
 
@@ -18,6 +26,7 @@ function successCallback(m) {
 	var ot = midi.outputs.values();
 	for(var o = ot.next(); !o.done; o = ot.next()){
 		outputs.push(o.value);
+		midiOutputSelect.innerHTML += '<option value="' + o.value.id + '">' + o.value.name + '</option>'; 
 	}
 	for(var cnt=0;cnt < inputs.length;cnt++){
 		inputs[cnt].onmidimessage = onMIDIEvent;
@@ -146,7 +155,7 @@ function sendString(string) {
 	}
 
 	checksum = (128 - (checksum % 128)) % 128;
-	outputs[0].send([0xf0, 0x41, 0x10, 0x45, 0x12, 0x10, 0x00, 0x00].concat(byteArray).concat([checksum, 0xf7]));
+	outputs[midiOutputIndex].send([0xf0, 0x41, 0x10, 0x45, 0x12, 0x10, 0x00, 0x00].concat(byteArray).concat([checksum, 0xf7]));
 }
 
 function clearCheck() {
@@ -181,7 +190,7 @@ function display(){
 	}
 	checksum = (128 - (checksum % 128)) % 128;
 
-	outputs[0].send([0xf0, 0x41, 0x10, 0x45, 0x12, 0x10, 0x01, 0x00].concat(dotData).concat([checksum, 0xf7]));
+	outputs[midiOutputIndex].send([0xf0, 0x41, 0x10, 0x45, 0x12, 0x10, 0x01, 0x00].concat(dotData).concat([checksum, 0xf7]));
 }
 
 var ballPositionX = 5, ballPositionY = 11;
