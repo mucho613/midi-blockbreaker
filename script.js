@@ -36,7 +36,7 @@ function successCallback(m) {
 }
 
 function errorCallback() {
-	console.log("Error!");
+	console.error("Web MIDI API Initialize Error");
 }
 
 function beep(noteNumber, length) {
