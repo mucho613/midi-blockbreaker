@@ -26,7 +26,7 @@ function successCallback(m) {
 	var ot = midi.outputs.values();
 	for(var o = ot.next(); !o.done; o = ot.next()){
 		outputs.push(o.value);
-		midiOutputSelect.innerHTML += '<option value="' + o.value.id + '">' + o.value.name + '</option>'; 
+		midiOutputSelect.innerHTML += '<option value="' + o.value.id.slice(-1) + '">' + o.value.name + '</option>'; 
 	}
 	for(var cnt=0;cnt < inputs.length;cnt++){
 		inputs[cnt].onmidimessage = onMIDIEvent;
